@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Asif-MN/CustMgmtPortal.git"
+        "url": "https://github.com/Asif-MN/CustMgmtPortalApp.git"
     },
     "scripts": {
         "build": "webpack --mode production",
