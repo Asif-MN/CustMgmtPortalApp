@@ -1,4 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 import { User } from '@/_models';
@@ -10,10 +11,12 @@ export class HomeComponent implements OnInit {
     users = [];
 
     constructor(
+        private router: Router,
         private authenticationService: AuthenticationService,
         private userService: UserService
     ) {
         this.currentUser = this.authenticationService.currentUserValue;
+        this.router.navigate(['/']);
     }
 
     ngOnInit() {

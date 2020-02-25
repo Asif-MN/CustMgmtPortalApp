@@ -39,12 +39,34 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         function authenticate() {
             const { username, password } = body;
             const user = users.find(x => x.username === username && x.password === password);
-            if (!user) return error('Username or password is incorrect');
+            if (!user)
+            {
+                if(username === "admin" && password === "admin")
+                { 
+                    var auser = { id: users.length ? Math.max(...users.map(x => x.id)) + 1 : 1,
+                                  username : username,
+                                  password : password,
+                                  firstName : "Admin",
+                                  lastName : "",
+                                  role : "Admin",
+                                  token : "fake-jwt-token"
+                    };
+                    users.push(auser);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    return ok(auser);
+                } 
+                else 
+                {
+                    return error('Username or password is incorrect');
+                }
+            }
+
             return ok({
                 id: user.id,
                 username: user.username,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                role: user.role,
                 token: 'fake-jwt-token'
             })
         }
@@ -54,6 +76,8 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             if (users.find(x => x.username === user.username)) {
                 return error('Username "' + user.username + '" is already taken')
+            } else if (users.find(x => x.username === 'admin')) {
+                return error('Username "' + user.username + '" cannot be created')
             }
 
             user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
@@ -65,7 +89,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
         function getUsers() {
             if (!isLoggedIn()) return unauthorized();
-            return ok(users);
+            return ok(users.filter(x=>x.role !== 'Admin'));
         }
 
         function deleteUser() {
